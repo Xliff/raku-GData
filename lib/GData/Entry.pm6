@@ -260,8 +260,10 @@ class GData::Entry is GData::Parsasble {
     gdata_entry_get_id($!ge);
   }
 
-  method get_published is also<get-published> {
-    gdata_entry_get_published($!ge);
+  method get_published ( :$raw = False ) is also<get-published> {
+    my $p = gdata_entry_get_published($!ge);
+    return $p if $raw;
+    DateTime.new($p);
   }
 
   method get_rights is also<get-rights> {
@@ -282,8 +284,10 @@ class GData::Entry is GData::Parsasble {
     unstable_get_type( self.^name, &gdata_entry_get_type, $n, $t )
   }
 
-  method get_updated is also<get-updated> {
-    gdata_entry_get_updated($!ge);
+  method get_updated ( :$raw = True ) is also<get-updated> {
+    my $u = gdata_entry_get_updated($!ge);
+    return $u if $raw;
+    DateTime.new($u);
   }
 
   method is_inserted is also<is-inserted> {
