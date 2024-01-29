@@ -1,0 +1,12 @@
+prefix=GData
+struct-prefix=GData
+modules=GData:Raw::Types
+backups=backup,bitbucket,google-backup,azure-backup,hut
+hfile-prefix=
+lib=gdata
+include-directory=/usr/src/libgdata/gdata
+exec=
+subprefixes=
+idir-avail=True
+extension=.h
+build-exclude=Panel::Raw::Traps,Panel::Raw::Class
