@@ -7,8 +7,8 @@ use GData::Raw::Types;
 use GData::Raw::Youtube::Service;
 
 # use GData::Authorization::Domain;
-use GData::Feed;
 use GData::Service;
+use GData::Youtube::Feed;
 use GData::Youtube::Video;
 
 use GLib::Roles::Implementor;
@@ -219,7 +219,7 @@ class GData::Youtube::Service is GData::Service {
       $error
     );
     set_error($error);
-    propReturnObject($f, $raw, |GData::Feed.getTypePair);
+    propReturnObject($f, $raw, |GData::Youtube::Feed.getTypePair);
   }
 
   proto method query_related_async (|)
@@ -351,6 +351,8 @@ class GData::Youtube::Service is GData::Service {
       $progress_user_data,
       $error
     );
+    set_error($error);
+    propReturnObject($f, $raw, |GData::Youtube::Feed.getTypePair)
   }
 
   method query_standard_feed_async (
@@ -423,7 +425,7 @@ class GData::Youtube::Service is GData::Service {
       $error
     );
     set_error($error);
-    propReturnObject($f, $raw, |GData::Feed.getTypePair)
+    propReturnObject($f, $raw, |GData::Youtube::Feed.getTypePair)
   }
 
   method query_videos_async (

@@ -104,7 +104,7 @@ sub gdata_youtube_service_query_related (
   gpointer                   $progress_user_data,
   CArray[Pointer[GError]]    $error
 )
-  returns GDataFeed
+  returns GDataYoutubeFeed
   is      native(gdata)
   is      export
 { * }
@@ -147,7 +147,7 @@ sub gdata_youtube_service_query_standard_feed (
   gpointer                     $progress_user_data,
   CArray[Pointer[GError]]      $error
 )
-  returns GDataFeed
+  returns GDataYoutubeFeed
   is      native(gdata)
   is      export
 { * }
@@ -184,7 +184,7 @@ sub gdata_youtube_service_query_videos (
   gpointer                   $progress_user_data,
   CArray[Pointer[GError]]    $error
 )
-  returns GDataFeed
+  returns GDataYoutubeFeed
   is      native(gdata)
   is      export
 { * }
@@ -194,7 +194,7 @@ sub gdata_youtube_service_query_videos_async (
   GDataQuery          $query,
   GCancellable        $cancellable,
                       &progress_callback(
-                        GDataEntry,
+                        GDataYoutubeVideo,
                         guint
                         guint,
                         gpointer
