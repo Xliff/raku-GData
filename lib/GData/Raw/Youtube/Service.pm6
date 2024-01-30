@@ -43,7 +43,7 @@ sub gdata_youtube_service_get_categories_async (
   GDataYouTubeService $self,
   GCancellable        $cancellable,
                       &callback (
-                        GDataYoutubeService,
+                        GDataYouTubeService,
                         GAsyncResult,
                         gpointer
                       ),
@@ -95,16 +95,16 @@ sub gdata_youtube_service_query_related (
   GDataYouTubeVideo          $video,
   GDataQuery                 $query,
   GCancellable               $cancellable,
-                             &progress_callback(
+                             &progress_callback (
                                GDataEntry,
-                               guint
+                               guint,
                                guint,
                                gpointer
                              ), #= GDataQueryProgressCallback
   gpointer                   $progress_user_data,
   CArray[Pointer[GError]]    $error
 )
-  returns GDataYoutubeFeed
+  returns GDataYouTubeFeed
   is      native(gdata)
   is      export
 { * }
@@ -114,16 +114,16 @@ sub gdata_youtube_service_query_related_async (
   GDataYouTubeVideo   $video,
   GDataQuery          $query,
   GCancellable        $cancellable,
-                      &progress_callback(
+                      &progress_callback (
                         GDataEntry,
-                        guint
+                        guint,
                         guint,
                         gpointer
                       ), #= GDataQueryProgressCallback
   gpointer            $progress_user_data,
                       &destroy_progress_user_data (gpointer),
                       &callback (
-                        GDataYoutubeService,
+                        GDataYouTubeService,
                         GAsyncResult,
                         gpointer
                       ),
@@ -138,16 +138,16 @@ sub gdata_youtube_service_query_standard_feed (
   GDataYouTubeStandardFeedType $feed_type,
   GDataQuery                   $query,
   GCancellable                 $cancellable,
-                               &progress_callback(
+                               &progress_callback (
                                  GDataEntry,
-                                 guint
+                                 guint,
                                  guint,
                                  gpointer
                                ), #= GDataQueryProgressCallback
   gpointer                     $progress_user_data,
   CArray[Pointer[GError]]      $error
 )
-  returns GDataYoutubeFeed
+  returns GDataYouTubeFeed
   is      native(gdata)
   is      export
 { * }
@@ -157,16 +157,16 @@ sub gdata_youtube_service_query_standard_feed_async (
   GDataYouTubeStandardFeedType $feed_type,
   GDataQuery                   $query,
   GCancellable                 $cancellable,
-                               &progress_callback(
+                               &progress_callback (
                                  GDataEntry,
-                                 guint
+                                 guint,
                                  guint,
                                  gpointer
                                ), #= GDataQueryProgressCallback
   gpointer                     $progress_user_data,
                                &destroy_progress_user_data (gpointer),
                                &callback (
-                                 GDataYoutubeService,
+                                 GDataYouTubeService,
                                  GAsyncResult,
                                  gpointer
                                ),
@@ -184,7 +184,7 @@ sub gdata_youtube_service_query_videos (
   gpointer                   $progress_user_data,
   CArray[Pointer[GError]]    $error
 )
-  returns GDataYoutubeFeed
+  returns GDataYouTubeFeed
   is      native(gdata)
   is      export
 { * }
@@ -193,16 +193,16 @@ sub gdata_youtube_service_query_videos_async (
   GDataYouTubeService $self,
   GDataQuery          $query,
   GCancellable        $cancellable,
-                      &progress_callback(
-                        GDataYoutubeVideo,
-                        guint
+                      &progress_callback (
+                        GDataYouTubeVideo,
+                        guint,
                         guint,
                         gpointer
                       ), #= GDataQueryProgressCallback
   gpointer            $progress_user_data,
                       &destroy_progress_user_data (gpointer),
                       &callback (
-                        GDataYoutubeService,
+                        GDataYouTubeService,
                         GAsyncResult,
                         gpointer
                       ),

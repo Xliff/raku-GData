@@ -1,10 +1,14 @@
 use v6.c;
 
+use NativeCall;
+use Method::Also;
+
 use GLib::Raw::Traits;
 use GData::Raw::Types;
 use GData::Raw::Youtube::Video;
 
 use GLib::GList;
+use GData::Entry;
 # use GData::Media::Category;
 # use GData::Youtube::State;
 
@@ -37,7 +41,7 @@ class GData::Youtube::Video is GData::Entry {
     self.setGDataEntry($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataYouTubeVideo
+  method GData::Raw::Structs::GDataYouTubeVideo
     is also<GDataYoutubeVideo>
   { $!gyv }
 
@@ -58,7 +62,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: string
-  method aspect-ratio is rw  is g-property {
+  method aspect-ratio is rw  is g-property is also<aspect_ratio> {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -73,7 +77,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: double
-  method average-rating is rw  is g-property {
+  method average-rating is rw  is g-property is also<average_rating> {
     my $gv = GLib::Value.new( G_TYPE_DOUBLE );
     Proxy.new(
       FETCH => sub ($) {
@@ -135,7 +139,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: uint
-  method favorite-count is rw  is g-property {
+  method favorite-count is rw  is g-property is also<favorite_count> {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -149,7 +153,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: boolean
-  method is-private is rw  is g-property {
+  method is-private is rw  is g-property is also<is_private> {
     my $gv = GLib::Value.new( G_TYPE_BOOLEAN );
     Proxy.new(
       FETCH => sub ($) {
@@ -231,7 +235,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: uint
-  method max-rating is rw  is g-property {
+  method max-rating is rw  is g-property is also<max_rating> {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -245,7 +249,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: uint
-  method min-rating is rw  is g-property {
+  method min-rating is rw  is g-property is also<min_rating> {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -259,7 +263,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: string
-  method player-uri is rw  is g-property {
+  method player-uri is rw  is g-property is also<player_uri> {
     my $gv = GLib::Value.new( G_TYPE_STRING );
     Proxy.new(
       FETCH => sub ($) {
@@ -273,7 +277,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: uint
-  method rating-count is rw  is g-property {
+  method rating-count is rw  is g-property is also<rating_count> {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -341,7 +345,7 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   # Type: uint
-  method view-count is rw  is g-property {
+  method view-count is rw  is g-property is also<view_count> {
     my $gv = GLib::Value.new( G_TYPE_UINT );
     Proxy.new(
       FETCH => sub ($) {
@@ -354,17 +358,19 @@ class GData::Youtube::Video is GData::Entry {
     );
   }
 
-  method get_access_control (Str() $action, :$enum = True) {
+  method get_access_control (Str() $action, :$enum = True)
+    is also<get-access-control>
+  {
     my $p = gdata_youtube_video_get_access_control($!gyv, $action);
     return $p unless $enum;
-    GDataYoutubePermissionEnum($p);
+    GDataYouTubePermissionEnum($p);
   }
 
-  method get_aspect_ratio {
+  method get_aspect_ratio is also<get-aspect-ratio> {
     gdata_youtube_video_get_aspect_ratio($!gyv);
   }
 
-  method get_category ( :$raw = False ) {
+  method get_category ( :$raw = False ) is also<get-category> {
     propReturnObject(
       gdata_youtube_video_get_category($!gyv),
       $raw,
@@ -373,49 +379,63 @@ class GData::Youtube::Video is GData::Entry {
   }
 
   proto method get_coordinates (|)
+    is also<get-coordinates>
   { * }
 
-  multi method get_coordinates (
+  multi method get_coordinates {
     samewith($, $);
   }
   multi method get_coordinates ($latitude is rw, $longitude is rw) {
     my gdouble ($lat, $lon) = 0e0 xx 2;
 
-    gdata_youtube_video_get_coordinates($!gyv, $lat, $long);
+    gdata_youtube_video_get_coordinates($!gyv, $lat, $lon);
     ($latitude, $longitude) = ($lat, $lon);
   }
 
-  method get_description {
+  method get_description is also<get-description> {
     gdata_youtube_video_get_description($!gyv);
   }
 
-  method get_duration {
+  method get_duration is also<get-duration> {
     gdata_youtube_video_get_duration($!gyv);
   }
 
-  method get_favorite_count {
+  method get_favorite_count is also<get-favorite-count> {
     gdata_youtube_video_get_favorite_count($!gyv);
   }
 
-  method get_keywords ( :$raw = False ) {
+  method get_keywords ( :$raw = False ) is also<get-keywords> {
     my $ca = gdata_youtube_video_get_keywords($!gyv);
     return $ca if $raw;
     CArrayToArray($ca);
   }
 
-  method get_location {
+  method get_location is also<get-location> {
     gdata_youtube_video_get_location($!gyv);
   }
 
-  method get_media_rating (Str() $rating_type) {
+  method get_media_rating (Str() $rating_type) is also<get-media-rating> {
     gdata_youtube_video_get_media_rating($!gyv, $rating_type);
   }
 
-  method get_player_uri {
+  method get_player_uri is also<get-player-uri> {
     gdata_youtube_video_get_player_uri($!gyv);
   }
 
+  method get_url
+    is also<
+      get-url
+      url
+    >
+  {
+    # cw: May be unnecessary, but here for convenience until something
+    #     better comes along.
+    "https://www.youtube.com/watch?v={ self.id }"
+  }
+
+
   proto method get_rating (|)
+    is also<get-rating>
   { * }
 
   multi method get_rating {
@@ -427,20 +447,20 @@ class GData::Youtube::Video is GData::Entry {
     $count   is rw,
     $average is rw
   ) {
-    my gint    ($mx, $mx, $c) = 0 xx 3;
+    my gint    ($mn, $mx, $c) = 0 xx 3;
     my gdouble  $a            = 0e0;
 
     gdata_youtube_video_get_rating($!gyv, $mn, $mx, $c, $a);
     ($min, $max, $count, $average) = ($mn, $mx, $c, $a);
   }
 
-  method get_recorded ( :$raw = False ) {
+  method get_recorded ( :$raw = False ) is also<get-recorded> {
     my $r = gdata_youtube_video_get_recorded($!gyv);
     return $r if $raw;
     DateTime.new($r);
   }
 
-  method get_state ( :$raw = False ) {
+  method get_state ( :$raw = False ) is also<get-state> {
     propReturnObject(
       gdata_youtube_video_get_state($!gyv),
       $raw,
@@ -448,69 +468,79 @@ class GData::Youtube::Video is GData::Entry {
     );
   }
 
-  method get_thumbnails {
+  method get_thumbnails is also<get-thumbnails> {
     gdata_youtube_video_get_thumbnails($!gyv);
   }
 
-  method get_type {
+  method get_type is also<get-type> {
     state ($n, $t);
 
     unstable_get_type( self.^name, &gdata_youtube_video_get_type, $n, $t );
   }
 
-  method get_uploaded ( :$raw = False ) {
+  method get_uploaded ( :$raw = False ) is also<get-uploaded> {
     my $u = gdata_youtube_video_get_uploaded($!gyv);
     return $u if $raw;
     DateTime.new($u);
   }
 
-  method get_video_id_from_uri {
-    gdata_youtube_video_get_video_id_from_uri($!gyv);
+  method get_video_id_from_uri (Str() $uri)
+    is also<get-video-id-from-uri>
+    is static
+  {
+    gdata_youtube_video_get_video_id_from_uri($uri);
   }
 
-  method get_view_count {
+  method get_view_count is also<get-view-count> {
     gdata_youtube_video_get_view_count($!gyv);
   }
 
-  method is_private {
+  method get_is_private is also<get-is-private> {
     so gdata_youtube_video_is_private($!gyv);
   }
 
-  method is_restricted_in_country (Str() $country) {
+  method is_restricted_in_country (Str() $country)
+    is also<is-restricted-in-country>
+  {
     so gdata_youtube_video_is_restricted_in_country($!gyv, $country);
   }
 
-  method set_access_control (Str() $action, Int() $permission) {
+  method set_access_control (Str() $action, Int() $permission)
+    is also<set-access-control>
+  {
     my GDataYouTubePermission $p = $permission;
 
     gdata_youtube_video_set_access_control($!gyv, $action, $permission);
   }
 
-  method set_aspect_ratio (Str() $aspect_ratio) {
+  method set_aspect_ratio (Str() $aspect_ratio) is also<set-aspect-ratio> {
     gdata_youtube_video_set_aspect_ratio($!gyv, $aspect_ratio);
   }
 
-  method set_category (GDataMediaCategory() $category) {
+  method set_category (GDataMediaCategory() $category) is also<set-category> {
     gdata_youtube_video_set_category($!gyv, $category);
   }
 
-  method set_coordinates (Num() $latitude, Num() $longitude) {
+  method set_coordinates (Num() $latitude, Num() $longitude)
+    is also<set-coordinates>
+  {
     my gdouble ($lat, $long) = ($latitude, $longitude);
 
     gdata_youtube_video_set_coordinates($!gyv, $lat, $long);
   }
 
-  method set_description (Str() $description) {
+  method set_description (Str() $description) is also<set-description> {
     gdata_youtube_video_set_description($!gyv, $description);
   }
 
-  method set_is_private (Int() $is_private) {
+  method set_is_private (Int() $is_private) is also<set-is-private> {
     my gboolean $i = $is_private.so.Int;
 
     gdata_youtube_video_set_is_private($!gyv, $i);
   }
 
   proto method set_keywords (|)
+    is also<set-keywords>
   { * }
 
   multi method set_keywords (@keywords) {
@@ -520,11 +550,12 @@ class GData::Youtube::Video is GData::Entry {
     gdata_youtube_video_set_keywords($!gyv, $keywords);
   }
 
-  method set_location (Str() $location) {
+  method set_location (Str() $location) is also<set-location> {
     gdata_youtube_video_set_location($!gyv, $location);
   }
 
   proto method set_recorded (|)
+    is also<set-recorded>
   { * }
 
   multi method set_recorded ($_) {

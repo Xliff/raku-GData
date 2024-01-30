@@ -2,9 +2,11 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GData::Raw::Types;
 use GData::Raw::Entry;
 
+use GLib::GList;
 # use GData::Author;
 # use GData::Category;
 # use GData::Link;
@@ -15,7 +17,7 @@ use GLib::Roles::Implementor;
 our subset GDataEntryAncestry is export of Mu
   where GDataEntry | GDataParsableAncestry;
 
-class GData::Entry is GData::Parsasble {
+class GData::Entry is GData::Parsable {
   has GDataEntry $!ge is implementor;
 
   submethod BUILD ( :$gdata-entry ) {
@@ -39,7 +41,7 @@ class GData::Entry is GData::Parsasble {
     self.setGDataParsable($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataEntry
+  method GData::Raw::Structs::GDataEntry
     is also<GDataEntry>
   { $!ge }
 
@@ -53,8 +55,8 @@ class GData::Entry is GData::Parsasble {
     $o.ref if $ref;
     $o;
   }
-  multi method new {
-    my $gdata-entry = gdata_entry_new();
+  multi method new (Str() $id) {
+    my $gdata-entry = gdata_entry_new($id);
 
     $gdata-entry ?? self.bless( :$gdata-entry ) !! Nil;
   }
@@ -134,12 +136,14 @@ class GData::Entry is GData::Parsasble {
   }
 
   # Type: int64
-  method published is rw  is g-property {
+  method published ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_INT64 );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('published', $gv);
-        $gv.int64;
+        my $p = $gv.int64;
+        return $p if $raw;
+        DateTime.new($p);
       },
       STORE => -> $, Int() $val is copy {
         warn 'published does not allow writing'
@@ -193,12 +197,14 @@ class GData::Entry is GData::Parsasble {
   }
 
   # Type: int64
-  method updated is rw  is g-property {
+  method updated ( :$raw = False )  is rw  is g-property {
     my $gv = GLib::Value.new( G_TYPE_INT64 );
     Proxy.new(
       FETCH => sub ($) {
         self.prop_get('updated', $gv);
-        $gv.int64;
+        my $u = $gv.int64;
+        return $u if $raw;
+        DateTime.new($u);
       },
       STORE => -> $, Int() $val is copy {
         warn 'updated does not allow writing'
@@ -290,7 +296,7 @@ class GData::Entry is GData::Parsasble {
     DateTime.new($u);
   }
 
-  method is_inserted is also<is-inserted> {
+  method get_is_inserted is also<get-is-inserted> {
     so gdata_entry_is_inserted($!ge);
   }
 

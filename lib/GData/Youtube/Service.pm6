@@ -1,5 +1,6 @@
 use v6.c;
 
+use NativeCall;
 use Method::Also;
 
 use GLib::Raw::Traits;
@@ -13,39 +14,39 @@ use GData::Youtube::Video;
 
 use GLib::Roles::Implementor;
 
-our subset GDataYoutubeServiceAncestry is export of Mu
-  where GDataYoutubeService | GDataServiceAncestry;
+our subset GDataYouTubeServiceAncestry is export of Mu
+  where GDataYouTubeService | GDataServiceAncestry;
 
 class GData::Youtube::Service is GData::Service {
-  has GDataYoutubeService $!gys is implementor;
+  has GDataYouTubeService $!gys is implementor;
 
   submethod BUILD ( :$gdata-yousvc ) {
-    self.setGDataYoutubeService($gdata-yousvc) if $gdata-yousvc
+    self.setGDataYouTubeService($gdata-yousvc) if $gdata-yousvc
   }
 
-  method setGDataYoutubeService (GDataYoutubeServiceAncestry $_) {
+  method setGDataYouTubeService (GDataYouTubeServiceAncestry $_) {
     my $to-parent;
 
     $!gys = do {
-      when GDataYoutubeService {
+      when GDataYouTubeService {
         $to-parent = cast(GDataService, $_);
         $_;
       }
 
       default {
         $to-parent = $_;
-        cast(GDataYoutubeService, $_);
+        cast(GDataYouTubeService, $_);
       }
     }
     self.setGDataService($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataYoutubeService
+  method GData::Raw::Structs::GDataYoutubeService
     is also<GDataYoutubeService>
   { $!gys }
 
   multi method new (
-     $gdata-yousvc where * ~~ GDataYoutubeServiceAncestry,
+     $gdata-yousvc where * ~~ GDataYouTubeServiceAncestry,
     :$ref                                                  = True
   ) {
     return unless $gdata-yousvc;
@@ -79,7 +80,7 @@ class GData::Youtube::Service is GData::Service {
   }
 
   method error_quark is static is also<error-quark> {
-    gdata_youtube_service_error_quark($!gys);
+    gdata_youtube_service_error_quark();
   }
 
   method finish_video_upload (
@@ -110,6 +111,7 @@ class GData::Youtube::Service is GData::Service {
 
   proto method get_categories_async (|)
     is also<get-categories-async>
+  { * }
 
   multi method get_categories_async (
      &callback,
@@ -146,7 +148,7 @@ class GData::Youtube::Service is GData::Service {
 
   method get_primary_authorization_domain ( :$raw = False ) is also<get-primary-authorization-domain> {
     propReturnObject(
-      gdata_youtube_service_get_primary_authorization_domain($!gys),
+      gdata_youtube_service_get_primary_authorization_domain(),
       $raw,
       |GData::Authorization::Domain.getTypePair
     )
@@ -164,7 +166,7 @@ class GData::Youtube::Service is GData::Service {
 
   multi method query_related (
      $video,
-     $error                                   = gerror
+     $error                                   = gerror,
     :$cancellable                             = GCancellable,
     :progress-callback(:&progress_callback)   = Callable,
     :progress-user-data(:$progress_user_data) = gpointer,
@@ -229,10 +231,10 @@ class GData::Youtube::Service is GData::Service {
   multi method query_related_async (
      $video,
      &callback,
-     $user_data                    = gpointer
+     $user_data                    = gpointer,
     :$cancellable                  = GCancellable,
     :&progress_callback            = Callable,
-    :$progress_user_data           = gpoiner,
+    :$progress_user_data           = gpointer,
     :&destroy_progress_user_data   = %DEFAULT-CALLBACKS<GDestroyNotify>,
   ) {
     samewith(
@@ -248,11 +250,12 @@ class GData::Youtube::Service is GData::Service {
   }
   multi method query_related_async (
      $video,
+     $query,
      &callback,
-     $user_data                    = gpointer
+     $user_data                    = gpointer,
     :$cancellable                  = GCancellable,
     :&progress_callback            = Callable,
-    :$progress_user_data           = gpoiner,
+    :$progress_user_data           = gpointer,
     :&destroy_progress_user_data   = %DEFAULT-CALLBACKS<GDestroyNotify>,
   ) {
     samewith(
@@ -342,7 +345,7 @@ class GData::Youtube::Service is GData::Service {
     my GDataYouTubeStandardFeedType $f = $feed_type;
 
     clear_error;
-    my $f = gdata_youtube_service_query_standard_feed(
+    my $feed = gdata_youtube_service_query_standard_feed(
       $!gys,
       $f,
       $query,
@@ -352,22 +355,34 @@ class GData::Youtube::Service is GData::Service {
       $error
     );
     set_error($error);
-    propReturnObject($f, $raw, |GData::Youtube::Feed.getTypePair)
+    propReturnObject($feed, $raw, |GData::Youtube::Feed.getTypePair)
   }
 
   method query_standard_feed_async (
-    GDataYouTubeStandardFeedType $feed_type,
-    GDataQuery                   $query,
-    GCancellable                 $cancellable,
-    GDataQueryProgressCallback   $progress_callback,
-    gpointer                     $progress_user_data,
-    GDestroyNotify               $destroy_progress_user_data,
-    GAsyncReadyCallback          $callback,
-    gpointer                     $user_data
+    Int()          $feed_type,
+    GDataQuery()   $query,
+    GCancellable() $cancellable,
+                   &progress_callback,
+    gpointer       $progress_user_data,
+                   &destroy_progress_user_data,
+                   &callback,
+    gpointer       $user_data
   )
     is also<query-standard-feed-async>
   {
-    gdata_youtube_service_query_standard_feed_async($!gys, $feed_type, $query, $cancellable, $progress_callback, $progress_user_data, $destroy_progress_user_data, $callback, $user_data);
+    my GDataYouTubeStandardFeedType $f = $feed_type;
+
+    gdata_youtube_service_query_standard_feed_async(
+      $!gys,
+      $f,
+      $query,
+      $cancellable,
+      &progress_callback,
+      $progress_user_data,
+      &destroy_progress_user_data,
+      &callback,
+      $user_data
+    );
   }
 
   proto method query_videos (|)
@@ -375,7 +390,7 @@ class GData::Youtube::Service is GData::Service {
   { * }
 
   multi method query_videos (
-     $error              = gerror,
+    :$error              = gerror,
     :$cancellable        = GCancellable,
     :&progress_callback  = Callable,
     :$progress_user_data = gpointer,
@@ -429,17 +444,26 @@ class GData::Youtube::Service is GData::Service {
   }
 
   method query_videos_async (
-    GDataQuery                 $query,
-    GCancellable               $cancellable,
-    GDataQueryProgressCallback $progress_callback,
-    gpointer                   $progress_user_data,
-    GDestroyNotify             $destroy_progress_user_data,
-    GAsyncReadyCallback        $callback,
-    gpointer                   $user_data
+    GDataQuery   $query,
+    GCancellable $cancellable,
+                 &progress_callback,
+    gpointer     $progress_user_data,
+                 &destroy_progress_user_data,
+                 &callback,
+    gpointer     $user_data                    = gpointer
   )
     is also<query-videos-async>
   {
-    gdata_youtube_service_query_videos_async($!gys, $query, $cancellable, $progress_callback, $progress_user_data, $destroy_progress_user_data, $callback, $user_data);
+    gdata_youtube_service_query_videos_async(
+      $!gys,
+      $query,
+      $cancellable,
+      &progress_callback,
+      $progress_user_data,
+      &destroy_progress_user_data,
+      &callback,
+      $user_data
+    );
   }
 
   method upload_video (

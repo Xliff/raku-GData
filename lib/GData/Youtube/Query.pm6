@@ -2,6 +2,7 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GData::Raw::Types;
 use GData::Raw::Youtube::Query;
 
@@ -37,7 +38,7 @@ class GData::Youtube::Query is GData::Query {
     self.setGDataQuery($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataYouTubeQuery
+  method GData::Raw::Structs::GDataYouTubeQuery
     is also<GDataYouTubeQuery>
   { $!gyq }
 
@@ -65,12 +66,27 @@ class GData::Youtube::Query is GData::Query {
       FETCH => sub ($) {
         self.prop_get('age', $gv);
         my $a = $gv.enum;
-        return $a unless $enum
+        return $a unless $enum;
         GDataYouTubeAgeEnum($a);
       },
       STORE => -> $, Int() $val is copy {
-        $gv.valueFromEnum(GDataYoutubeAge) = $val;
+        $gv.valueFromEnum(GDataYouTubeAge) = $val;
         self.prop_set('age', $gv);
+      }
+    );
+  }
+
+  # Type: string
+  method channel-id is rw  is g-property {
+    my $gv = GLib::Value.new( G_TYPE_STRING );
+    Proxy.new(
+      FETCH => sub ($) {
+        self.prop_get('channel-id', $gv);
+        $gv.string;
+      },
+      STORE => -> $, Str() $val is copy {
+        $gv.string = $val;
+        self.prop_set('channel-id', $gv);
       }
     );
   }
@@ -180,7 +196,7 @@ class GData::Youtube::Query is GData::Query {
         GDataYouTubeSafeSearchEnum($s);
       },
       STORE => -> $, Int() $val is copy {
-        $gv.valueFromEnum(GDataYoutubeSafeSearch) = $val;
+        $gv.valueFromEnum(GDataYouTubeSafeSearch) = $val;
         self.prop_set('safe-search', $gv);
       }
     );
@@ -190,6 +206,10 @@ class GData::Youtube::Query is GData::Query {
     my $a = gdata_youtube_query_get_age($!gyq);
     return $a unless $enum;
     GDataYouTubeAgeEnum($a);
+  }
+
+  method get_channel_id is also<get-channel_id> {
+    gdata_youtube_query_get_license($!gyq);
   }
 
   method get_license is also<get-license> {
@@ -237,6 +257,10 @@ class GData::Youtube::Query is GData::Query {
     my GDataYouTubeAge   $a = $age;
 
     gdata_youtube_query_set_age($!gyq, $a);
+  }
+
+  method set_channel_id (Str() $channel-id) is also<set-channel-id> {
+    gdata_youtube_query_set_license($!gyq, $channel-id);
   }
 
   method set_license (Str() $license) is also<set-license> {

@@ -1,19 +1,19 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
 use GData::Raw::Types;
 use GData::Raw::Parsable;
 
-use GLib::Raw::Implementor;
-use GLib::Raw::Object;
-
+use GLib::Roles::Implementor;
+use GLib::Roles::Object;
 
 our subset GDataParsableAncestry is export of Mu
   where GDataParsable | GObject;
 
 class GData::Parsable {
-  also does GLib::Raw::Object;
+  also does GLib::Roles::Object;
 
   has GDataParsable $!gp is implementor;
 
@@ -38,7 +38,7 @@ class GData::Parsable {
     self!setObject($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataParsable
+  method GData::Raw::Structs::GDataParsable
     is also<GDataParsable>
   { $!gp }
 
@@ -58,7 +58,7 @@ class GData::Parsable {
   { * }
 
   multi method new_from_json ($json, $error = gerror) {
-    my $b = resolveBuffer($xml);
+    my $b = resolveBuffer($json);
 
     samewith($b, $b.elems, $error);
   }
@@ -67,27 +67,32 @@ class GData::Parsable {
     Int()                   $length,
     CArray[Pointer[GError]] $error
   ) {
-    my gint $l = length;
+    my gint $l = $length;
 
-    Int()gdata_parsable_new_from_json($!gp, $json, $l, $error);
+    my $gdata-parsable = gdata_parsable_new_from_json($json, $l, $error);
+
+    $gdata-parsable ?? self.bless( :$gdata-parsable ) !! Nil
   }
 
   proto method new_from_xml (|)
     is also<new-from-xml>
   { * }
 
-  method new_from_xml ($xml, $error = gerror) {
+  multi method new_from_xml ($xml, $error = gerror) {
     my $b = resolveBuffer($xml);
 
     samewith($b, $b.elems, $error);
   }
-  method new_from_xml (
+  multi method new_from_xml (
     CArray[uint8]           $xml,
     Int()                   $length,
     CArray[Pointer[GError]] $error
   ) {
-    my gint $l = length;
-    gdata_parsable_new_from_xml($!gp, $xml, $l, $error);
+    my gint $l = $length;
+
+    my $gdata-parsable = gdata_parsable_new_from_xml($!gp, $xml, $l, $error);
+
+    $gdata-parsable ?? self.bless( :$gdata-parsable ) !! Nil
   }
 
   # Type: boolean
@@ -113,7 +118,10 @@ class GData::Parsable {
     gdata_parsable_get_content_type($!gp);
   }
 
-  method get_json is also<get-json> {
+  method get_json is also<
+    get-json
+    json
+  > {
     gdata_parsable_get_json($!gp);
   }
 
@@ -123,7 +131,12 @@ class GData::Parsable {
     unstable_get_type( self.^name, &gdata_parsable_get_type, $n, $t );
   }
 
-  method get_xml is also<get-xml> {
+  method get_xml
+    is also<
+      get-xml
+      xml
+    >
+  {
     gdata_parsable_get_xml($!gp);
   }
 

@@ -37,7 +37,7 @@ class GData::Query {
     self!setObject($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataQuery
+  method GData::Raw::Structs::GDataQuery
     is also<GDataQuery>
   { $!gq }
 
@@ -268,7 +268,7 @@ class GData::Query {
   method get_type is also<get-type> {
     state ($n, $t);
 
-    usntable_get_type( self.^name, &gdata_query_get_type, $n, $t );
+    unstable_get_type( self.^name, &gdata_query_get_type, $n, $t );
   }
 
   method get_updated_max is also<get-updated-max> {
@@ -279,7 +279,7 @@ class GData::Query {
     gdata_query_get_updated_min($!gq);
   }
 
-  method is_strict is also<is-strict> {
+  method get_is_strict is also<get-is-strict> {
     so gdata_query_is_strict($!gq);
   }
 

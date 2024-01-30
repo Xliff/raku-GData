@@ -1,20 +1,21 @@
 use v6.c;
 
 use Method::Also;
+use NativeCall;
 
 use GLib::Raw::Traits;
 use GData::Raw::Types;
 use GData::Raw::Service;
 
 use GLib::GList;
-use GIO::ProxyResolver;
-use GData::Authorizer;
-use GData::Authorization::Domain;
+# use GData::Authorizer;
+# use GData::Authorization::Domain;
 use GData::Entry;
 use GData::Feed;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
+use GIO::Roles::ProxyResolver;
 
 our subset GDataServiceAncestry is export of Mu
   where GDataService | GObject;
@@ -45,7 +46,7 @@ class GData::Service {
     self!setObject($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataService
+  method GData::Raw::Structs::GDataService
     is also<GDataService>
   { $!gs }
 
@@ -95,7 +96,11 @@ class GData::Service {
   }
 
   # Type: GProxyResolver
-  method proxy-resolver is rw  is g-property is also<proxy_resolver> {
+  method proxy-resolver ( :$raw = False )
+    is rw
+    is g-property
+    is also<proxy_resolver>
+  {
     my $gv = GLib::Value.new( GIO::ProxyResolver.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -129,7 +134,7 @@ class GData::Service {
     GDataEntry()               $entry,
     GCancellable()             $cancellable = GCancellable,
     CArray[Pointer[GError]]    $error       = gerror
-  ) 
+  )
     is also<delete-entry>
   {
     clear_error;
@@ -183,7 +188,7 @@ class GData::Service {
   method delete_entry_finish (
     GAsyncResult            $async_result,
     CArray[Pointer[GError]] $error         = gerror
-  ) 
+  )
     is also<delete-entry-finish>
   {
     clear_error;
@@ -193,13 +198,13 @@ class GData::Service {
   }
 
   method error_quark is static is also<error-quark> {
-    gdata_service_error_quark($!gs);
+    gdata_service_error_quark();
   }
 
   method get_authorization_domains (
     :$raw            = False,
     :gslist(:$glist) = False
-  ) 
+  )
     is also<get-authorization-domains>
   {
     returnGList(
@@ -247,7 +252,7 @@ class GData::Service {
     GCancellable()              $cancellable = GCancellable,
     CArray[Pointer[GError]]     $error       = gerror,
                                :$raw         = False
-  ) 
+  )
     is also<insert-entry>
   {
     clear_error;
@@ -272,7 +277,7 @@ class GData::Service {
      $upload_uri,
      $entry,
      &callback,
-     $user_data    = gpointer
+     $user_data    = gpointer,
     :$cancellable  = GCancellable
   ) {
     samewith(
@@ -307,7 +312,7 @@ class GData::Service {
     GAsyncResult()           $async_result,
     CArray[Pointer[GError]]  $error         = gerror,
                             :$raw           = False
-  ) 
+  )
     is also<insert-entry-finish>
   {
     clear_error;
@@ -320,7 +325,7 @@ class GData::Service {
     so gdata_service_is_authorized($!gs);
   }
 
-  method query (
+  multi method query (
      $domain,
      $feed_uri,
      $query,
@@ -341,7 +346,7 @@ class GData::Service {
       $error
     );
   }
-  method query (
+  multi method query (
     GDataAuthorizationDomain()  $domain,
     Str()                       $feed_uri,
     GDataQuery()                $query,
@@ -432,7 +437,7 @@ class GData::Service {
     GAsyncResult()           $async_result,
     CArray[Pointer[GError]]  $error         = gerror,
                             :$raw           = False
-  ) 
+  )
     is also<query-finish>
   {
     clear_error;
@@ -449,7 +454,7 @@ class GData::Service {
     GCancellable()              $cancellable = GCancellable,
     CArray[Pointer[GError]]     $error       = gerror,
                                :$raw         = False
-  ) 
+  )
     is also<query-single-entry>
   {
     my GType $e = $entry_type;
@@ -518,7 +523,7 @@ class GData::Service {
     GAsyncResult()           $async_result,
     CArray[Pointer[GError]]  $error,
                             :$raw           = False
-  ) 
+  )
     is also<query-single-entry-finish>
   {
     propReturnObject(
@@ -552,7 +557,7 @@ class GData::Service {
     GCancellable()              $cancellable = GCancellable,
     CArray[Pointer[GError]]     $error       = gerror,
                                :$raw         = False
-  ) 
+  )
     is also<update-entry>
   {
     clear_error
@@ -607,7 +612,7 @@ class GData::Service {
     GAsyncResult()           $async_result,
     CArray[Pointer[GError]]  $error         = gerror,
                             :$raw           = False
-  ) 
+  )
     is also<update-entry-finish>
   {
     clear_error;

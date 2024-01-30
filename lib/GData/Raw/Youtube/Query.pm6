@@ -23,6 +23,12 @@ sub gdata_youtube_query_get_license (GDataYouTubeQuery $self)
   is      export
 { * }
 
+sub gdata_youtube_query_get_channel_id (GDataYouTubeQuery $self)
+  returns Str
+  is      native(gdata)
+  is      export
+{ * }
+
 sub gdata_youtube_query_get_location (
   GDataYouTubeQuery $self,
   gdouble           $latitude  is rw,
@@ -66,6 +72,14 @@ sub gdata_youtube_query_new (Str $q)
 sub gdata_youtube_query_set_age (
   GDataYouTubeQuery $self,
   GDataYouTubeAge   $age
+)
+  is      native(gdata)
+  is      export
+{ * }
+
+sub gdata_youtube_query_set_channel_id (
+  GDataYouTubeQuery $self,
+  Str               $channel-id
 )
   is      native(gdata)
   is      export

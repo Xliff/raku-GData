@@ -2,23 +2,25 @@ use v6.c;
 
 use Method::Also;
 
+use GLib::Raw::Traits;
 use GData::Raw::Types;
 use GData::Raw::Feed;
 
+use GLib::GList;
 # use GData::Author;
 # use GData::Category;
 use GData::Entry;
 # use GData::Generator;
 # use GData::Link;
-use GData::Parseable;
+use GData::Parsable;
 
 use GLib::Roles::Implementor;
 
 
 our subset GDataFeedAncestry is export of Mu
-  where GDataFeed | GDataParseableAncestry;
+  where GDataFeed | GDataParsableAncestry;
 
-class GData::Feed is GData::Parseable {
+class GData::Feed is GData::Parsable {
   has GDataFeed $!gf is implementor;
 
   submethod BUILD ( :$gdata-feed ) {
@@ -30,7 +32,7 @@ class GData::Feed is GData::Parseable {
 
     $!gf = do {
       when GDataFeed {
-        $to-parent = cast(GDataParseable, $_);
+        $to-parent = cast(GDataParsable, $_);
         $_;
       }
 
@@ -39,10 +41,10 @@ class GData::Feed is GData::Parseable {
         cast(GDataFeed, $_);
       }
     }
-    self.setGDataParseable($to-parent);
+    self.setGDataParsable($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataFeed
+  method GData::Raw::Structs::GDataFeed
     is also<GDataFeed>
   { $!gf }
 
@@ -69,7 +71,7 @@ class GData::Feed is GData::Parseable {
   }
 
   # Type: GDataGenerator
-  method generator is rw  is g-property {
+  method generator ( :$raw = False ) is rw  is g-property {
     my $gv = GLib::Value.new( GData::Generator.get_type );
     Proxy.new(
       FETCH => sub ($) {
@@ -265,7 +267,10 @@ class GData::Feed is GData::Parseable {
   }
 
   method get_entries ( :$raw = False, :gslist(:$glist) = False )
-    is also<get-entries>
+    is also<
+      get-entries
+      entries
+    >
   {
     returnGList(
       gdata_feed_get_entries($!gf),

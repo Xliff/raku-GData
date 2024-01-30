@@ -3,15 +3,17 @@ use v6.c;
 use NativeCall;
 
 use GLib::Raw::Definitions;
-use GLib::Raw::Structs;
 use GLib::Raw::Object;
+use GLib::Raw::Structs;
+use GLib::Raw::Subs;
 use GIO::Raw::Definitions;
+use GIO::Raw::Structs;
 use GData::Raw::Definitions;
 use GData::Raw::Enums;
 
 unit package GData::Raw::Structs;
 
-class GDataDummyAuthorizer is repr<CStruct> is export {
+class GDataDummyAuthorizer is repr<CStruct> is export does StructSkipsTest['not compiled'] {
 	HAS GObject  $!parent;
 	has gpointer $!priv  ;
 }
@@ -31,7 +33,7 @@ class GDataService is repr<CStruct> is export {
 	has gpointer $!priv  ;
 }
 
-class GDataAsyncProgressClosure is repr<CStruct> is export {
+class GDataAsyncProgressClosure is repr<CStruct> is export does StructSkipsTest['not compiled'] {
 	has guint     $.progress_destroy_notify_count is rw;
 	has guint     $.async_ready_notify_count      is rw;
 	has GMainLoop $!main_loop                    ;
@@ -53,9 +55,28 @@ class GDataParsable is repr<CStruct> is export {
 	has gpointer $!priv  ;
 }
 
+# cw: Temporatily added for debugging!
+class GDataEntryPrivate is repr<CStruct> is export {
+  has Str                     $.title;
+  has Str                     $.summary;
+  has Str                     $.id;
+  has Str                     $.etag;
+  # has int64                   $.updated;
+  # has int64                   $.published;
+  # has GList                   $!categories;
+  # has str                     $.content;
+  # has gboolean                $.content_is_uri;
+  # has GList 	                $!links;
+  # has GList 	                $!authors;
+  # has str                     $.rights;
+  # has GDataBatchOperationType $.batch_operation_type;
+  # has guint                   $.batch_id;
+};
+
+
 class GDataEntry is repr<CStruct> is export {
-	HAS GDataParsable $!parent;
-	has gpointer      $!priv  ;
+	HAS GDataParsable     $!parent;
+	has GDataEntryPrivate $.priv  ;
 }
 
 class GDataFeed is repr<CStruct> is export {
@@ -68,7 +89,7 @@ class GDataQuery is repr<CStruct> is export {
 	has gpointer $!priv  ;
 }
 
-class BatchOperation is repr<CStruct> is export {
+class BatchOperation is repr<CStruct> is export does StructSkipsTest['not compiled']  {
 	has guint                       $.id         is rw;
 	has GDataBatchOperationType     $!type      ;
 	has gpointer                    $!callback  ; #= GDataBatchOperationCallback
@@ -89,7 +110,7 @@ class GDataAccessRule is repr<CStruct> is export {
 	has gpointer   $!priv  ;
 }
 
-class GDataAsyncTestData is repr<CStruct> is export {
+class GDataAsyncTestData is repr<CStruct> is export is StructSkipsTest['not compiled'] {
 	has GMainLoop     $!main_loop              ;
 	has GCancellable  $!cancellable            ;
 	has guint         $.cancellation_timeout    is rw;
@@ -103,12 +124,12 @@ class GDataAuthor is repr<CStruct> is export {
 	has gpointer      $!priv  ;
 }
 
-class GDataBatchFeed is repr<CStruct> is export {
+class GDataBatchFeed is repr<CStruct> is export is StructSkipsTest['not compiled'] {
 	HAS GDataFeed $!parent;
 	has gpointer  $!priv  ;
 }
 
-class GDataBuffer is repr<CStruct> is export {
+class GDataBuffer is repr<CStruct> is export does StructSkipsTest['not compiled']  {
 	has GDataBufferChunk $!head            ;
 	has gsize            $!head_read_offset;
 	has gsize            $!total_length    ;
@@ -230,7 +251,7 @@ class GDataDocumentsText is repr<CStruct> is export {
 	has gpointer               $!priv  ;
 }
 
-class GDataExifTags is repr<CStruct> is export {
+class GDataExifTags is repr<CStruct> is export does StructSkipsTest['not compiled']  {
 	HAS GDataParsable $!parent;
 	has gpointer      $!priv  ;
 }
@@ -275,7 +296,7 @@ class GDataGDEmailAddress is repr<CStruct> is export {
 	has gpointer      $!priv  ;
 }
 
-class GDataGDFeedLink is repr<CStruct> is export {
+class GDataGDFeedLink is repr<CStruct> is export does StructSkipsTest['not compiled']  {
 	HAS GDataParsable $!parent;
 	has gpointer      $!priv  ;
 }
@@ -330,12 +351,12 @@ class GDataGenerator is repr<CStruct> is export {
 	has gpointer      $!priv  ;
 }
 
-class GDataGeoRSSWhere is repr<CStruct> is export {
+class GDataGeoRSSWhere is repr<CStruct> is export does StructSkipsTest['not compiled']  {
 	HAS GDataParsable $!parent;
 	has gpointer      $!priv  ;
 }
 
-class GDataGoaAuthorizer is repr<CStruct> is export {
+class GDataGoaAuthorizer is repr<CStruct> is export does StructSkipsTest['not compiled']  {
 	HAS GObject  $!parent;
 	has gpointer $!priv  ;
 }
@@ -360,7 +381,7 @@ class GDataMediaCredit is repr<CStruct> is export {
 	has gpointer      $!priv  ;
 }
 
-class GDataMediaGroup is repr<CStruct> is export {
+class GDataMediaGroup is repr<CStruct> is export does StructSkipsTest['not compiled']  {
 	HAS GDataParsable $!parent;
 	has gpointer      $!priv  ;
 }
@@ -458,6 +479,6 @@ class GDataYouTubeState is repr<CStruct> is export {
 }
 
 class GDataYouTubeVideo is repr<CStruct> is export {
-	HAS GDataEntry $!parent;
+	HAS GDataEntry $.parent;
 	has gpointer   $!priv  ;
 }

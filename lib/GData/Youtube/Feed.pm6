@@ -2,6 +2,11 @@ use v6.c;
 
 use Method::Also;
 use GData::Raw::Types;
+use GData::Raw::Feed;
+
+use GLib::GList;
+use GData::Feed;
+use GData::Youtube::Video;
 
 use GLib::Roles::Implementor;
 
@@ -34,7 +39,7 @@ class GData::Youtube::Feed is GData::Feed {
     self.setGDataFeed($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataYouTubeFeed
+  method GData::Raw::Structs::GDataYouTubeFeed
     is also<GDataYouTubeFeed>
   { $!gyf }
 
@@ -49,6 +54,21 @@ class GData::Youtube::Feed is GData::Feed {
     $o;
   }
 
+  method get_entries ( :$raw = False, :gslist(:$glist) = False )
+    is also<
+      get-entries
+      entries
+    >
+  {
+    my $e = returnGList(
+      gdata_feed_get_entries(self.GDataFeed),
+      $raw,
+      $glist,
+      |GData::Youtube::Video.getTypePair
+    );
+
+  }
+
   method get_type {
     state ($n, $t);
 
@@ -58,6 +78,14 @@ class GData::Youtube::Feed is GData::Feed {
     { * }
 
     unstable_get_type( self.^name, &gdata_youtube_feed_get_type, $n, $t );
+  }
+
+  method look_up_entry (Str() $id, :$raw = False) is also<look-up-entry> {
+    propReturnObject(
+      callwith( :raw ),
+      $raw,
+      |GData::Youtube::Video.getTypePair
+    );
   }
 
 }
