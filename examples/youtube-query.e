@@ -17,13 +17,7 @@ sub MAIN {
     my $q = GData::Youtube::Query.new('beef wellington');
     #$q.author = 'Cleo Abrams';
 
-    my $f = $s.query-videos($q);
-
-    say "Response:\n{ $f.json }\n{ $f.xml }";
-
-    my $gl = $f.entries;
-
-    for $gl.Array.kv -> $k, $_ {
+    for $s.query-videos($q).entries.Array.kv -> $k, $_ {
       say qq:to/VIDEO/;
         Result #{ $k.succ }:
           ID:        { .id }
