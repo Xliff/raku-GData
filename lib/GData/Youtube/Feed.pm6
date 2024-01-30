@@ -5,6 +5,8 @@ use GData::Raw::Types;
 
 use GLib::Roles::Implementor;
 
+### /usr/src/libgdata/gdata/services/youtube/gdata-youtube-feed.h
+
 our subset GDataYouTubeFeedAncestry is export of Mu
   where GDataYouTubeFeed | GDataFeedAncestry;
 
