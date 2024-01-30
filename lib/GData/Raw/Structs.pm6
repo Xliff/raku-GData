@@ -56,7 +56,11 @@ class GDataParsable is repr<CStruct> is export {
 }
 
 # cw: Temporatily added for debugging!
-class GDataEntryPrivate is repr<CStruct> is export {
+class GDataEntryPrivate
+	is   repr<CStruct> 
+	is   export 
+	does StructSkipsTest['internal']
+{
   has Str                     $.title;
   has Str                     $.summary;
   has Str                     $.id;
