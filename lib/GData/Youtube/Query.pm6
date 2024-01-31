@@ -53,7 +53,7 @@ class GData::Youtube::Query is GData::Query {
     $o;
   }
 
-  multi method new (Str() $q) {
+  multi method new (Str() $q = Str) {
     my $gdata-youquery = gdata_youtube_query_new($q);
 
     $gdata-youquery ?? self.bless( :$gdata-youquery ) !! Nil;
