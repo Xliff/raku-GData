@@ -7,8 +7,8 @@ use GData::Raw::Types;
 use GData::Raw::Entry;
 
 use GLib::GList;
-# use GData::Author;
-# use GData::Category;
+use GData::Author;
+use GData::Category;
 # use GData::Link;
 use GData::Parsable;
 

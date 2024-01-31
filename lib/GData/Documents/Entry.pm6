@@ -7,7 +7,7 @@ use GData::Raw::Types;
 use GData::Raw::Documents::Entry;
 
 use GLib::GList;
-# use GData::Author;
+use GData::Author;
 # use GData::Documents::Property;
 use GData::Entry;
 
