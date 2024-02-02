@@ -40,3 +40,43 @@ class GData::Enums::Youtube::SafeSearch {
   }
 
 }
+
+class GData::Enums::Media::Expression {
+
+  method get_type {
+    state ($n, $t);
+
+    sub gdata_media_expression_get_type
+      returns GType
+      is      native(gdata)
+    { * }
+
+    unstable_get_type(
+      self.^name,
+      &gdata_media_expression_get_type,
+      $n,
+      $t
+    );
+  }
+
+}
+
+class GData::Enums::Media::Medium {
+
+  method get_type {
+    state ($n, $t);
+
+    sub gdata_media_medium_get_type
+      returns GType
+      is      native(gdata)
+    { * }
+
+    unstable_get_type(
+      self.^name,
+      &gdata_media_medium_get_type,
+      $n,
+      $t
+    );
+  }
+
+}
