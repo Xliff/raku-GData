@@ -7,6 +7,9 @@ use GLib::Raw::Traits;
 use GData::Raw::Types;
 use GData::Raw::Picasa::Album;
 
+use GData::Media::Content;
+use GData::Media::Thumbnail;
+
 use GLib::GList;
 use GData::Entry;
 
