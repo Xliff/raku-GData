@@ -11,13 +11,18 @@ sub MAIN {
 
   $a.activate.tap: SUB {
     my $s = GData::Youtube::Service.new(
-      'AIzaSyDNM-xfTw1XPa2W5xY-QWJR3mHS6TyidvE'
+      'AIzaSyCQLeConee7miBuDg80FTMY3V9n1_62tS0'
     );
 
-    my $q = GData::Youtube::Query.new('beef wellington');
-    #$q.author = 'Cleo Abrams';
+    my $q = GData::Youtube::Query.new;
+    #( .max-results, .channel-id ) = (25, 'UC415bOPUcGSamy543abLmRA') given $q;
+    $q.max-results = 25;
 
-    for $s.query-videos($q).entries.Array.kv -> $k, $_ {
+    print "\n";
+    my $f = $s.query-videos($q);
+    $f.json.say;
+    $f.xml.say;
+    for $f.entries.Array.sort( -*.published ).kv -> $k, $_ {
       say qq:to/VIDEO/;
         Result #{ $k.succ }:
           ID:        { .id }
