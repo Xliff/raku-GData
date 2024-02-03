@@ -11,11 +11,10 @@ use GData::Author;
 use GData::Category;
 use GData::Entry;
 # use GData::Generator;
-# use GData::Link;
+use GData::Link;
 use GData::Parsable;
 
 use GLib::Roles::Implementor;
-
 
 our subset GDataFeedAncestry is export of Mu
   where GDataFeed | GDataParsableAncestry;

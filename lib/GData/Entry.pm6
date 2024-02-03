@@ -9,7 +9,7 @@ use GData::Raw::Entry;
 use GLib::GList;
 use GData::Author;
 use GData::Category;
-# use GData::Link;
+use GData::Link;
 use GData::Parsable;
 
 use GLib::Roles::Implementor;
