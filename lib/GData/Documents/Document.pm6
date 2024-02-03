@@ -6,6 +6,8 @@ use Method::Also;
 use GData::Raw::Types;
 use GData::Raw::Documents::Document;
 
+use GData::DownloadStream;
+
 use GData::Documents::Entry;
 
 use GLib::Roles::Implementor;
