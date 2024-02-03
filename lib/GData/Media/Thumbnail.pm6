@@ -6,6 +6,8 @@ use Method::Also;
 use GData::Raw::Types;
 use GData::Raw::Media::Thumbnail;
 
+use GData::DownloadStream;
+
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
 
