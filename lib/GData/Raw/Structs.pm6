@@ -57,8 +57,8 @@ class GDataParsable is repr<CStruct> is export {
 
 # cw: Temporatily added for debugging!
 class GDataEntryPrivate
-	is   repr<CStruct> 
-	is   export 
+	is   repr<CStruct>
+	is   export
 	does StructSkipsTest['internal']
 {
   has Str                     $.title;
@@ -361,6 +361,11 @@ class GDataGeoRSSWhere is repr<CStruct> is export does StructSkipsTest['not comp
 }
 
 class GDataGoaAuthorizer is repr<CStruct> is export does StructSkipsTest['not compiled']  {
+	HAS GObject  $!parent;
+	has gpointer $!priv  ;
+}
+
+class GDataOAuth2Authorizer is repr<CStruct> is export {
 	HAS GObject  $!parent;
 	has gpointer $!priv  ;
 }
