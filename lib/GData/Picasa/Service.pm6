@@ -7,7 +7,7 @@ use GLib::Raw::Traits;
 use GData::Raw::Types;
 use GData::Raw::Picasa::Service;
 
-# use GData::Authiorization::Domain;
+use GData::Authiorization::Domain;
 use GData::Service;
 # use GData::User;
 use GData::Picasa::Album;

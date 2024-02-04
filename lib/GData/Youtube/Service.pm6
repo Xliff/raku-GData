@@ -7,7 +7,7 @@ use GLib::Raw::Traits;
 use GData::Raw::Types;
 use GData::Raw::Youtube::Service;
 
-# use GData::Authorization::Domain;
+use GData::Authorization::Domain;
 use GData::Service;
 use GData::Youtube::Feed;
 use GData::Youtube::Video;

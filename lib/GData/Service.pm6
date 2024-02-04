@@ -8,8 +8,8 @@ use GData::Raw::Types;
 use GData::Raw::Service;
 
 use GLib::GList;
-# use GData::Authorizer;
-# use GData::Authorization::Domain;
+use GData::Authorizer;
+use GData::Authorization::Domain;
 use GData::Entry;
 use GData::Feed;
 

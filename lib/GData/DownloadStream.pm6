@@ -8,7 +8,7 @@ use GData::Raw::DownloadStream;
 
 use GIO::InputStream;
 use GIO::Cancellable;
-# use GData::Authorization::Domain;
+use GData::Authorization::Domain;
 use GData::Entry;
 use GData::Service;
 

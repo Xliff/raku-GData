@@ -8,6 +8,7 @@ use GData::Raw::Types;
 use GData::Raw::UploadStream;
 
 use GIO::OutputStream;
+use GData::Authorization::Domain
 
 use GLib::Roles::Implementor;
 
