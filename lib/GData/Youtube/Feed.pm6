@@ -82,7 +82,7 @@ class GData::Youtube::Feed is GData::Feed {
 
   method look_up_entry (Str() $id, :$raw = False) is also<look-up-entry> {
     propReturnObject(
-      callwith( :raw ),
+      gdata_feed_look_up_entry(self.GDataFeed, $id),
       $raw,
       |GData::Youtube::Video.getTypePair
     );
