@@ -6,9 +6,10 @@ use Method::Also;
 use GData::Raw::Types;
 use GData::Raw::OAuth2Authorizer;
 
+use GData::Calendar::Service;
+# use GData::Documents::Service;
 use GData::Picasa::Service;
 use GData::Youtube::Service;
-# use GData::Documents::Service;
 
 use GLib::Roles::Implementor;
 use GLib::Roles::Object;
@@ -18,7 +19,7 @@ use GData::Roles::Authorizer;
 our subset GDataOAuth2AuthorizerAncestry is export of Mu
   where GDataOAuth2Authorizer | GDataAuthorizer | GObject;
 
-class GData::OAuth2Authoriser {
+class GData::OAuth2Authorizer {
   also does GLib::Roles::Object;
   also does GData::Roles::Authorizer;
 
@@ -52,7 +53,7 @@ class GData::OAuth2Authoriser {
     self.roleInit-GDataAuthorizer;
   }
 
-  method GData::Raw::Definitions::GDataOAuth2Authorizer
+  method GData::Raw::Structs::GDataOAuth2Authorizer
     is also<GDataOAuth2Authorizer>
   { $!goa }
 
@@ -95,6 +96,7 @@ class GData::OAuth2Authoriser {
     self.new(
       $client_id,
       $client_secret,
+      $redirect_uri,
       GData::Youtube::Service.get_type
     );
   }
@@ -104,12 +106,36 @@ class GData::OAuth2Authoriser {
     Str() $client_secret,
     Str() $redirect_uri
   )
-    is also<new-picasa>
+    is also<
+      new-picasa
+      new-photos
+      new_photos
+    >
   {
     self.new(
       $client_id,
       $client_secret,
+      $redirect_uri,
       GData::Picasa::Service.get_type
+    );
+  }
+
+  multi method new_calendar (
+    Str() $client_id,
+    Str() $client_secret,
+    Str() $redirect_uri,
+  )
+    is also<
+      new-calendar
+      new_cal
+      new-cal
+    >
+  {
+    self.new(
+      $client_id,
+      $client_secret,
+      $redirect_uri,
+      GData::Calendar::Service.get_type
     );
   }
 
@@ -123,6 +149,7 @@ class GData::OAuth2Authoriser {
     self.new(
       $client_id,
       $client_secret,
+      $redirect_uri,
       GData::Documents::Service.get_type
     );
   }
@@ -286,9 +313,17 @@ class GData::OAuth2Authoriser {
     );
   }
 
-  method build_authentication_uri (
+  proto method build_authentication_uri (|)
+  { * }
+
+  # cw: Why isn't this firing?
+  multi method build_authentication_uri ( :scopes(:$all) is required ) {
+    say '»»»»»»»»»»»»»»»»»»»»»»»»» Here...';
+    samewith(Str, True);
+  }
+  multi method build_authentication_uri (
     Str() $login_hint,
-    Int() $include_granted_scopes
+    Int() $include_granted_scopes = False
   )
     is also<build-authentication-uri>
   {
@@ -336,18 +371,21 @@ class GData::OAuth2Authoriser {
   }
 
   method request_authorization (
-    Str                     $authorization_code,
-    GCancellable            $cancellable         = GCancellable,
+    Str()                   $authorization_code,
+    GCancellable()          $cancellable         = GCancellable,
     CArray[Pointer[GError]] $error               = gerror
   )
     is also<request-authorization>
   {
-    do gdata_oauth2_authorizer_request_authorization(
+    clear_error;
+    my $rv = so gdata_oauth2_authorizer_request_authorization(
       $!goa,
       $authorization_code,
       $cancellable,
       $error
     );
+    set_error($error);
+    $rv;
   }
 
   proto method request_authorization_async (|)
