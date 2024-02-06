@@ -9,6 +9,9 @@ use GData::Raw::Calendar::Event;
 
 use GLib::GList;
 use GData::Entry;
+use GData::GD::When;
+use GData::GD::Where;
+use GData::GD::Who;
 
 use GLib::Roles::Implementor;
 
