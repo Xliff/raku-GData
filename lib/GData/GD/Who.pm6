@@ -17,8 +17,7 @@ class GData::GD::Who is GData::Parsable {
   has GDataGDWho $!gdw is implementor;
 
   submethod BUILD ( :$gdata-gd-who ) {
-    self.setGDataGDWho($gdata-gd-who)
-      if $gdata-gd-who
+    self.setGDataGDWho($gdata-gd-who) if $gdata-gd-who
   }
 
   method setGDataGDWho (GDataGDWhoAncestry $_) {
@@ -38,7 +37,7 @@ class GData::GD::Who is GData::Parsable {
     self.setGDataParsable($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataGDWho
+  method GData::Raw::Structs::GDataGDWho
     is also<GDataGDWho>
   { $!gdw }
 

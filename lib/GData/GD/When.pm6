@@ -38,7 +38,7 @@ class GData::GD::When is GData::Parsable {
     self.setGDataParsable($to-parent);
   }
 
-  method GData::Raw::Definitions::GDataGDWhen
+  method GData::Raw::Structs::GDataGDWhen
     is also<GDataGDWhen>
   { $!gdw }
 
